@@ -1,0 +1,42 @@
+cabal-version:      3.0
+name:               cathedral
+version:            0.1.0.0
+synopsis:           A system for algorithmic understanding
+description:        
+    Cathedral combines symbolic reasoning with neural learning
+    to create a system that understands algorithms as thoughts.
+license:            MIT
+author:             Ana Paola Oviedo Salgado
+maintainer:         anaovied015@hotmail.com
+category:           Research
+build-type:         Simple
+
+-- Library 
+library
+    exposed-modules:  
+        Cathedral.Core.Types
+    
+    build-depends:    
+        base >=4.16,
+        text
+    
+    hs-source-dirs:   src
+    default-language: GHC2021
+    
+    ghc-options:      
+        -Wall
+
+-- Executable 
+executable cathedral
+    main-is:          Main.hs
+    
+    build-depends:    
+        base,
+        cathedral,
+        text
+    
+    hs-source-dirs:   app
+    default-language: GHC2021
+    
+    ghc-options:      
+        -Wall
