@@ -4,15 +4,15 @@ data Algorithm = Algorithm
     { algName :: Name
     , algParadigm :: Paradigm
     , algComplexity :: Complexity
-    --, algDescription :: Description
+    , algDescription :: Description
     }
 
 -- The paradigms
-data Paradigm = DivideAndConquer | Greedy | DynamicProgramming | BruteForce | Backtracking 
+data Paradigm = DivideAndConquer | Greedy | DynamicProgramming | BruteForce | Backtracking | GraphTraversal
 
 -- The complexity classes
 data Complexity = Constant | Linear | Cuadraric | Exponential | Logarithmic 
 
-data Name = Dijkstra | Lomuto | BubbleSort | QuickSort | MergeSort | MedianOfMedians | Karatsuab 
+data Name = Dijkstra | Lomuto | BubbleSort | QuickSort | MergeSort | MedianOfMedians | Karatsuab | DFS
 
---data Description = 
+data Description = "Check middle, search half" | "Find the shortest path in a graph" | "Explores nodes level by level "
