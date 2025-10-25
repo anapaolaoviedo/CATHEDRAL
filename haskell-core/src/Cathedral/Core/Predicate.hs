@@ -26,5 +26,3 @@ data Algorithm = Algorithm
     , algComplexity  :: Complexity
     , algDescription :: String
     } deriving (Eq, Show)
-
-    
