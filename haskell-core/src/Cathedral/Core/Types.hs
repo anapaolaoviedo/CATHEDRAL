@@ -1,4 +1,5 @@
-module Cathedral.Core.Types where
+module Cathedral.Core.Types 
+module Cathedral.Core.Predicate 
 
 -- | Algorithmic paradigms
 data Paradigm
@@ -20,11 +21,16 @@ data Complexity
     deriving (Eq, Show, Ord)
 
 -- | Algorithm specification
-data Algorithm = Algorithm
-    { algName        :: String
-    , algParadigm    :: Paradigm
-    , algComplexity  :: Complexity
-    , algDescription :: String
-    } deriving (Eq, Show)
+
+data Algorithm a b = Algorithm
+  { algName :: String
+  , algparadigm :: Paradigm
+  , algComplexity :: Complexity
+  , algDescription :: String
+  , implementation :: a -> b
+  , precondition :: Precondition a
+  , postcondition :: Postcondition a b
+  , invariants :: [Invariant]
+  }
 
     
