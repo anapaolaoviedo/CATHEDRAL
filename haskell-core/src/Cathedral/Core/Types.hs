@@ -1,5 +1,5 @@
-module Cathedral.Core.Types 
-module Cathedral.Core.Predicate 
+module Cathedral.Core.Types where
+import Cathedral.Core.Predicate 
 
 -- | Algorithmic paradigms
 data Paradigm
@@ -33,4 +33,18 @@ data Algorithm a b = Algorithm
   , invariants :: [Invariant]
   }
 
-    
+--module Cathedral.Core.Properties where 
+  -- Check if input satisfies precondition
+checkPrecondition :: Precondition a -> a -> Bool
+checkPrecondition (Precondition p)  = p 
+
+-- Check if output satisfies postcondition given input
+checkPostcondition :: Postcondition a b -> a -> b -> Bool
+checkPostcondition (Postcondition p) = p  
+
+-- Helper to check if algorithm respects specification
+checkSpecification :: Algorithm a b -> a -> b -> Bool
+checkSpecification alg input output =
+  let Precondition pre = precondition alg
+      Postcondition post = postcondition alg
+  in pre input && post input output

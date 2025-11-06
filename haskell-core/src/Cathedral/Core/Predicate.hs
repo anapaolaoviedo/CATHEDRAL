@@ -1,5 +1,4 @@
-module Cathedral.Core.Types where
-
+module Cathedral.Core.Predicate where
 -- here i need to add the predicates. i wanna keep it rooted into logic 
 -- fro now im gonna keep it simple 
 
@@ -32,7 +31,7 @@ mkInvariant = Invariant
 
 --helper always true predicate
 alwaysTrue :: Predicate a 
-alwaysTrue = const True 
+alwaysTrue = const True  
 
 --helper always flase predicate 
 alwaysFalse :: Predicate a
@@ -50,6 +49,28 @@ ordPred p1 p2 = \x -> p1 x || p2 x
 notPred :: Predicate a -> Predicate a
 notPred p = \x -> not (p x)
 
+-- common predicates for lists
+
+isEmpty :: Predicate [a]
+isEmpty = null
+
+nonEmpty :: Predicate [a]
+nonEmpty = not . null
+
+-- for sorting
+isSorted :: Ord a => Predicate [a]
+isSorted [] = True
+isSorted [_] = True
+isSorted (x:y:xs) = x <= y && isSorted (y:xs)
+
+-- check if two lists have same elements (for permutations)
+sameElements :: Eq a => [a] -> [a] -> Bool
+sameElements xs ys = 
+  length xs == length ys && all (`elem` ys) xs
+
+-- Check if index is valid
+validIndex :: [a] -> Int -> Bool
+validIndex xs i = i >= 0 && i < length xs
 
 
 
