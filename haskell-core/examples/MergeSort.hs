@@ -1,26 +1,32 @@
 module MergeSort where
 
-import Cathedral.Core.Types (Algorithm(..))
+import Cathedral.Core.Types
 import Cathedral.Core.Predicate
 
-
+-- Merge Sort as a full Algorithm: implementation + specification
 mergeSort :: Algorithm [Int] [Int]
 mergeSort = Algorithm
-  { algoName = "Merge Sort"
-  , algoType = Sorting
-  , algoPrecondition = mkPrecondition (\input -> not (null input))
-    
-  , algoPostcondition = mkPostcondition (\input output -> 
+  { algName = "Merge Sort"
+  , algParadigm = DivideAndConquer
+  , algComplexity = Linearithmic
+  , algDescription = "Split array, sort halves, merge"
+  , implementation = msort
+  , precondition = mkPrecondition alwaysTrue
+  , postcondition = mkPostcondition (\input output ->
       isSorted output && sameElements input output)
-    
-  , algoInvariant = [mkInvariant "Divide-and-conquer: split, sort halves, merge"]
+  , invariants = [mkInvariant "Divide-and-conquer: split, sort halves, merge"]
   }
+
+msort :: [Int] -> [Int]
+msort [] = []
+msort [x] = [x]
+msort xs = merge (msort left) (msort right)
   where
-    isSorted :: [Int] -> Bool
-    isSorted [] = True
-    isSorted [_] = True
-    isSorted (x:y:rest) = x <= y && isSorted (y:rest)
-    
-    sameElements :: [Int] -> [Int] -> Bool
-    sameElements xs ys = sort xs == sort ys
-      where sort = Data.List.sort  -- you'll need to import this
+    (left, right) = splitAt (length xs `div` 2) xs
+
+merge :: [Int] -> [Int] -> [Int]
+merge [] ys = ys
+merge xs [] = xs
+merge (x:xs) (y:ys)
+  | x <= y    = x : merge xs (y:ys)
+  | otherwise = y : merge (x:xs) ys

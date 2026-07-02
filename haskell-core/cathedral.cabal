@@ -13,9 +13,10 @@ build-type:         Simple
 
 -- Library 
 library
-    exposed-modules:  
+    exposed-modules:
         Cathedral.Core.Types
-    
+        Cathedral.Core.Predicate
+
     build-depends:    
         base >=4.16,
         text
@@ -29,13 +30,14 @@ library
 -- Executable 
 executable cathedral
     main-is:          Main.hs
-    
-    build-depends:    
+    other-modules:    MergeSort
+
+    build-depends:
         base,
         cathedral,
         text
-    
-    hs-source-dirs:   app
+
+    hs-source-dirs:   app, examples
     default-language: GHC2021
     
     ghc-options:      

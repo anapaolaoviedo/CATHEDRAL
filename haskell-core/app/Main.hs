@@ -1,65 +1,64 @@
---my actual algorithms will live here 
+--demo: build algorithms with full specs and check them on real inputs
 
 import Cathedral.Core.Types
-
-
--- ← ALGORITHM 1: Merge Sort
-mergeSort :: Algorithm
-mergeSort = Algorithm
-    { algName = "Merge Sort"
-    , algParadigm = DivideAndConquer
-    , algComplexity = Linearithmic
-    , algDescription = "Split array, sort halves, merge"
-    }
+import Cathedral.Core.Predicate
+import MergeSort (mergeSort)
 
 -- ← ALGORITHM 2: Binary Search
-binarySearch :: Algorithm
+-- input: (sorted array, target). output: index of target, if present
+binarySearch :: Algorithm ([Int], Int) (Maybe Int)
 binarySearch = Algorithm
     { algName = "Binary Search"
     , algParadigm = DivideAndConquer
     , algComplexity = Logarithmic
     , algDescription = "Check middle, search half"
+    , implementation = bsearch
+    , precondition = mkPrecondition (\(arr, _) -> isSorted arr)
+    , postcondition = mkPostcondition (\(arr, x) result ->
+        case result of
+          Just i  -> validIndex arr i && arr !! i == x
+          Nothing -> x `notElem` arr)
+    , invariants = [mkInvariant "If x is in arr, then x is in arr[low..high]"]
     }
 
--- ← ALGORITHM 3: Dijkstra
-dijkstra :: Algorithm
-dijkstra = Algorithm
-    {algName = "Dijkstra"
-    , algParadigm = Greedy
-    , algComplexity = Logarithmic
-    , algDescription = "Find the shortest path in a graph"
-    }
+bsearch :: ([Int], Int) -> Maybe Int
+bsearch (arr, x) = go 0 (length arr - 1)
+  where
+    go low high
+      | low > high = Nothing
+      | otherwise =
+          let mid = (low + high) `div` 2
+          in case compare (arr !! mid) x of
+               EQ -> Just mid
+               LT -> go (mid + 1) high
+               GT -> go low (mid - 1)
 
--- ← ALGORITHM 4: Depth First Search 
-depthFirstSearch :: Algorithm 
-depthFirstSearch = Algorithm 
-    {algName = "Depth First Search"
-    , algParadigm = GraphTraversal 
-    , algComplexity = Logarithmic
-    , algDescription = "Explores nodes level by level "
-    }
+-- print an algorithm card (Algorithm has no Show: it contains functions)
+describe :: Algorithm a b -> IO ()
+describe alg = do
+    putStrLn $ "  " ++ algName alg
+    putStrLn $ "    paradigm:    " ++ show (algParadigm alg)
+    putStrLn $ "    complexity:  " ++ show (algComplexity alg)
+    putStrLn $ "    description: " ++ algDescription alg
+    mapM_ (\(Invariant inv) -> putStrLn $ "    invariant:   " ++ inv)
+          (invariants alg)
 
--- ← ALGORITHM 5: Median of medians 
-medianOfMedians :: Algorithm
-medianOfMedians = Algorithm 
-    {algName = "Median of Medians"
-    , algParadigm = DivideAndConquer
-    , algComplexity = Linear 
-    , algDescription = "Divide into medians"
-    }
+-- run an algorithm on an input and check it against its own spec
+runAndCheck :: (Show a, Show b) => Algorithm a b -> a -> IO ()
+runAndCheck alg input = do
+    let output = implementation alg input
+    putStrLn $ "  " ++ algName alg ++ " " ++ show input ++ " = " ++ show output
+    putStrLn $ "    meets specification: " ++ show (checkSpecification alg input output)
 
 main :: IO ()
 main = do
-    putStrLn " Cathedral - Day 1"
+    putStrLn "Cathedral - algorithms with specifications"
     putStrLn ""
-    putStrLn "My algorithms:"
+    describe mergeSort
     putStrLn ""
-    print mergeSort
+    describe binarySearch
     putStrLn ""
-    print binarySearch
-    putStrLn ""
-    print dijkstra
-    putStrLn ""
-    print depthFirstSearch
-    putStrLn ""
-    print medianOfMedians
+    putStrLn "Checking implementations against their specs:"
+    runAndCheck mergeSort [5, 2, 8, 1, 9, 3]
+    runAndCheck binarySearch ([1, 2, 3, 5, 8, 9], 5)
+    runAndCheck binarySearch ([1, 2, 3, 5, 8, 9], 7)

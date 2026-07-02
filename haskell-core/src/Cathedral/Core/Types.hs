@@ -24,7 +24,7 @@ data Complexity
 
 data Algorithm a b = Algorithm
   { algName :: String
-  , algparadigm :: Paradigm
+  , algParadigm :: Paradigm
   , algComplexity :: Complexity
   , algDescription :: String
   , implementation :: a -> b

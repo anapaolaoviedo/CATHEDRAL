@@ -1,16 +1,17 @@
 module Cathedral.Core.Predicate where
--- here i need to add the predicates. i wanna keep it rooted into logic 
--- fro now im gonna keep it simple 
+-- here i need to add the predicates. i wanna keep it rooted into logic
+-- fro now im gonna keep it simple
 
-type Predicate a = a -> Bool 
+import Data.List (sort)
 
---precondition of what must be true before BEFORE the algorithm runs 
+type Predicate a = a -> Bool
+
+--precondition of what must be true before BEFORE the algorithm runs
+-- no Show instance: these wrap functions, which cannot be shown
 newtype Precondition a = Precondition (Predicate a)
-    deriving (Show)
 
---postcondition is what must be true after the algorithm runs 
+--postcondition is what must be true after the algorithm runs
 newtype Postcondition a b = Postcondition (a -> b -> Bool)
-    deriving (Show)
 
 --invariant is what bust me true during the algorithm 
 -- for now just a string 
@@ -41,9 +42,9 @@ alwaysFalse = const False
 andPred :: Predicate a -> Predicate a -> Predicate a 
 andPred p1 p2 = \x -> p1 x && p2 x 
 
---helper combine two predicates with OR 
-ordPred :: Predicate a -> Predicate a -> Predicate a 
-ordPred p1 p2 = \x -> p1 x || p2 x 
+--helper combine two predicates with OR
+orPred :: Predicate a -> Predicate a -> Predicate a
+orPred p1 p2 = \x -> p1 x || p2 x
 
 -- helper to negate a predicate
 notPred :: Predicate a -> Predicate a
@@ -64,9 +65,9 @@ isSorted [_] = True
 isSorted (x:y:xs) = x <= y && isSorted (y:xs)
 
 -- check if two lists have same elements (for permutations)
-sameElements :: Eq a => [a] -> [a] -> Bool
-sameElements xs ys = 
-  length xs == length ys && all (`elem` ys) xs
+-- sorting both compares them as multisets, so duplicates count too
+sameElements :: Ord a => [a] -> [a] -> Bool
+sameElements xs ys = sort xs == sort ys
 
 -- Check if index is valid
 validIndex :: [a] -> Int -> Bool
